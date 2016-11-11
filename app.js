@@ -8,9 +8,8 @@ var fs = require('fs');
 var path = require('path');
 var bodyParser = require('body-parser');
 
-//setup express and routes
+//setup express
 var app = express();
-app.use('/', routes);
 app.use(express.static('public'))
 app.use(express.static('views'))
 
@@ -27,6 +26,6 @@ app.engine('html', nunjucks.render);
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
 
-
-
+//setup router
+app.use('/', routes);
 
