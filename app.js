@@ -7,6 +7,7 @@ var nunjucks = require('nunjucks');
 var path = require('path');
 var bodyParser = require('body-parser');
 var models = require('./models');
+var Promise = require('bluebird');
 
 //setup express
 var app = express();
@@ -16,10 +17,13 @@ app.use(express.static('views'))
 //setup port in and postgres
 // const port = 3000;
 
-models.User.sync({})
-.then(function () {
-    return models.Page.sync({})
-})
+var usersSync = models.User.sync({ force: true })
+var pagesSync = models.Page.sync({ force: true })
+
+Promise.all([
+	usersSync,
+	pagesSync
+	])
 .then(function () {
     app.listen(3000, function () {
         console.log('Server is listening on port 3000!');
@@ -40,3 +44,9 @@ app.use(bodyParser.json());
 //setup router
 var wikiRouter = require('./routes/wiki');
 app.use('/wiki', wikiRouter);
+
+var usersRouter = require('./routes/users');
+app.use('/users', usersRouter);
+
+
+

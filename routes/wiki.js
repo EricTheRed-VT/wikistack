@@ -5,7 +5,7 @@ var models = require('../models');
 var nunjucks = require('nunjucks');
 var Page = models.Page;
 var User = models.User;
-
+var Promise = require('bluebird');
 
 router.get('/add', function(req, res, next){
 	//retrieve "add page" form
@@ -36,20 +36,33 @@ router.get('/:page', function(req, res, next) {
 
 router.post('/', function(req, res, next){
 	//submit new page
-	
-	var page = Page.build({
-    title: req.body.title,
-    content: req.body.content
-	});
-
-	page.save().then(function(savedPage){
-		res.redirect(savedPage.address);
+	User.findOrCreate({
+  		where: {
+    			name: req.body.author,
+    			email: req.body.email
+  		}
 	})
-	.catch(next);
+	.then(function (values) {
+
+  		var user = values[0];
+
+  		var page = Page.build({
+    			title: req.body.title,
+		    content: req.body.content
+		  });
+
+		  return page.save().then(function (page) {
+		    return page.setAuthor(user);
+		  });
+
+		})
+
+		.then(function (page) {
+		  res.redirect(page.address);
+		})
+		.catch(next);
+
 });
-
-
-
 
 
 module.exports = router;

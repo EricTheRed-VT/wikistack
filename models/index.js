@@ -1,6 +1,6 @@
 var Sequelize = require('sequelize');
-//var db = new Sequelize('postgres://localhost:5432/wikistack');
-var db = new Sequelize('postgres://eric:1234@localhost:5432/wikistack');
+var db = new Sequelize('postgres://localhost:5432/wikistack');
+// var db = new Sequelize('postgres://eric:1234@localhost:5432/wikistack');
 
 
 var Page = db.define('page', {
@@ -38,6 +38,10 @@ var User = db.define('user', {
         type: Sequelize.STRING, allowNull: false
     }
 });
+
+
+Page.belongsTo(User, { as: 'author' });
+
 
 Page.hook("beforeValidate", function(page, options) {
 	page.urlTitle = generateUrlTitle(page.title);
