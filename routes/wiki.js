@@ -2,6 +2,7 @@
 var express = require('express');
 var router = express.Router();
 var models = require('../models');
+var nunjucks = require('nunjucks');
 var Page = models.Page;
 var User = models.User;
 
@@ -13,7 +14,12 @@ router.get('/add', function(req, res, next){
 
 router.get('/', function(req, res, next){
 	//retrieve all pages
-	res.redirect('/');
+	Page.findAll()
+	.then(function(pages){
+		res.render('index', {pages});
+	})
+	.catch(next);
+	
 });
 
 router.get('/:page', function(req, res, next) {
@@ -23,7 +29,7 @@ router.get('/:page', function(req, res, next) {
     		} 
   	})
   	.then(function(foundPage){
-    		res.render('wikipage', foundPage);
+    		res.render('wikipage', {foundPage});
   	})
   	.catch(next);
 });
@@ -36,9 +42,10 @@ router.post('/', function(req, res, next){
     content: req.body.content
 	});
 
-	page.save().then(function(){
-		res.redirect(page.address);
-	});
+	page.save().then(function(savedPage){
+		res.redirect(savedPage.address);
+	})
+	.catch(next);
 });
 
 
