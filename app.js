@@ -4,8 +4,8 @@ var express = require('express');
 var morgan = require('morgan');
 var nunjucks = require('nunjucks');
 // var fs = require('fs');
-// var path = require('path');
-// var bodyParser = require('body-parser');
+var path = require('path');
+var bodyParser = require('body-parser');
 var models = require('./models');
 
 //setup express
@@ -33,11 +33,10 @@ var env = nunjucks.configure('views', {noCache: true});
 app.set('view engine', 'html');
 app.engine('html', nunjucks.render);
 
-//setup bodyparser
-// app.use(bodyParser.urlencoded({extended: true}));
-// app.use(bodyParser.json());
+// setup bodyparser
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
 
 //setup router
-
 var wikiRouter = require('./routes/wiki');
 app.use('/wiki', wikiRouter);
