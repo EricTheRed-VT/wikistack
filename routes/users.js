@@ -5,7 +5,7 @@ var models = require('../models');
 var nunjucks = require('nunjucks');
 var Page = models.Page;
 var User = models.User;
-var Promise = require('bluebird');
+// var Promise = require('bluebird');
 
 
 router.get('/', function (req, res, next) {

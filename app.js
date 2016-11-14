@@ -7,7 +7,7 @@ var nunjucks = require('nunjucks');
 var path = require('path');
 var bodyParser = require('body-parser');
 var models = require('./models');
-var Promise = require('bluebird');
+
 
 //setup express
 var app = express();

@@ -23,15 +23,26 @@ router.get('/', function(req, res, next){
 });
 
 router.get('/:page', function(req, res, next) {
-	Page.findOne({ 
-    		where: { 
-      		urlTitle: req.params.page 
-    		} 
-  	})
-  	.then(function(foundPage){
-    		res.render('wikipage', {foundPage});
-  	})
-  	.catch(next);
+	Page.findOne({
+    	where: {
+        urlTitle: req.params.page
+    },
+    include: [
+        {model: User, as: 'author'}
+    ]
+})
+.then(function (page) {
+    // page instance will have a .author property
+    // as a filled in user object ({ name, email })
+    if (page === null) {
+        res.status(404).send();
+    } else {
+        res.render('wikipage', {
+            foundPage: page
+        });
+    }
+})
+.catch(next);
 });
 
 router.post('/', function(req, res, next){
