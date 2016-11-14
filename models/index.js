@@ -1,6 +1,6 @@
 var Sequelize = require('sequelize');
-//var db = new Sequelize('postgres://localhost:5432/wikistack');
-var db = new Sequelize('postgres://eric:1234@localhost:5432/wikistack');
+var db = new Sequelize('postgres://localhost:5432/wikistack');
+// var db = new Sequelize('postgres://eric:1234@localhost:5432/wikistack');
 
 
 var Page = db.define('page', {
@@ -23,7 +23,7 @@ var Page = db.define('page', {
 	}, {
 		getterMethods:{
 			address: function(){
-				return `/wiki/ ${this.urlTitle}`
+				return `/wiki/${this.urlTitle}`
 			}
 		}
 	}
@@ -37,6 +37,10 @@ var User = db.define('user', {
     email: {
         type: Sequelize.STRING, allowNull: false
     }
+});
+
+Page.hook("beforeValidate", function(page, options) {
+	page.urlTitle = generateUrlTitle(page.title);
 });
 
 function generateUrlTitle(title) {

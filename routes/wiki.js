@@ -16,6 +16,18 @@ router.get('/', function(req, res, next){
 	res.redirect('/');
 });
 
+router.get('/:page', function(req, res, next) {
+	Page.findOne({ 
+    		where: { 
+      		urlTitle: req.params.page 
+    		} 
+  	})
+  	.then(function(foundPage){
+    		res.render('wikipage', foundPage);
+  	})
+  	.catch(next);
+});
+
 router.post('/', function(req, res, next){
 	//submit new page
 	
@@ -25,7 +37,7 @@ router.post('/', function(req, res, next){
 	});
 
 	page.save().then(function(){
-		res.redirect('/');
+		res.redirect(page.address);
 	});
 });
 
